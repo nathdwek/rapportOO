@@ -1,0 +1,106 @@
+\documentclass[a4paper, 12pt]{article}
+
+\input{preamble.tex}
+
+\title{Rapport 4 avril - projet orienté objet}
+\author{Jun Nuo Chi, Nathan Dwek, Thomas Vandamme}
+
+\begin{document}
+
+\begin{center}
+  \includegraphics[width=0.3\textwidth]{EPB.jpg}~\\[.5cm]
+
+\textsc{\Large rapport: projet orienté objet}\\
+Jun Nuo \textsc{Chi} - Nathan \textsc{Dwek} - Thomas \textsc{Vandamme}
+\end{center}
+
+\section{Sujet choisi et fonctionnalités}
+
+Nous allons essayer de programmer un jeu de type run \& jump basé sur l'univers de Sonic. Les fonctionnalités essentielles sont à implémenter sont donc:
+\begin{itemize}
+
+\item Moteur physique et hitbox <<précises>>.
+\item Héros unique capable au moins de marcher, sauter et courir, avec la course demandant une physique et un aspect assez particulier. Des bonus affectant les capacités et l'aspect du héros sont envisageables.
+\item Parmi les autres éléments dynamiques: au moins monstres et bonus.
+\item Une interface graphique capable de suivre le héros dans sa progression dans le niveau.
+
+\end{itemize}
+
+De plus, nous allons essayer de mettre en place un système de sauvegarde de partie, ce qui implique que le jeu doit comporter un menu avant le démarrage même d'une partie, ainsi qu'un menu accessible pendant la partie. Cet aspect doit encore être précisé.
+
+\section{Découpe objet}
+
+Les fonctionnalités principales à implémenter font logiquement apparaître trois interfaces qui regroupent des fonctions essentielles remplies par des groupes d'objets.
+\begin{itemize}
+  \item Les objets Drawables: qui peuvent se représenter à l'écran.
+  \item Les objets Hittables: qui jouent un rôle physique et possèdent donc une hitbox et sont capables de gérer leurs collisions.
+  \item Les objets SelfUpdatables: qui sont dynamiques et agissent d'eux-même, sans intervention extérieure (contrairement à un bloc bonus par exemple, qui est aussi dynamique, mais qui ne peut pas décider de lui-même de s'animer)(Toute séquence est donc originellement initiée par un SelfUpdatable).
+\end{itemize}
+
+Ceci permettrait de réduire le modèle du jeu à quelque chose comme:
+
+\begin{lstlisting}
+while (not game.isOver()){
+  for (Hittable h : hittables){
+    h.handleCollisions()
+  }
+  for (SelfUpdatable s : selfUpdatables){
+    s.update()
+  }
+  for (Drawable d : drawables){
+    d.draw(?)
+  }
+  wait(?)
+}
+\end{lstlisting}
+
+Avec le méthode update de Hero étant certainement un peu particulière puisque contrairement à celle Monster, elle ne se limite pas à de la logique mais attend aussi des inputs du joueur.
+
+Un niveau plus bas, différentes classes abstraites, plus <<parlantes>> implémentent une ou plusieurs interfaces. Plusieurs problématiques restent encore ouvertes
+\begin{itemize}
+  \item Les Blocks ne sont pas forcément Drawables car les blocs invisibles sont monnaie courante (pour détecter la mort par chute par exemple). Dès lors, on peut créer des blocs visibles soit en implémentant Drawable par certaines des sous-classes concrètes de Block, soit en créant des objets composites composés d'un Block et d'une Tile.
+  \item La gestion des collisions est encore sujette à débat. En effet, si l'on ne veut pas doubler le nombre d'opérations nécessaires, il faut a priori introduire une asymétrie dans les objets Hittables (Pour éviter que monstre1 vérifie s'il entre en collision avec bloc2 en même temps que bloc2 vérifie s'il entre en collision avec monstre1). Si l'on y fait pas attention monstre1 pourrait même essayer de gérer deux fois une seule et même collision.
+  \item De plus pour que les Hittables puissent détecter les collisions, il faudrait à priori qu'ils disposent de références vers les autres Hittables (ou probablement uniquement les Hittables SelfUpdatables). Dès lors, chaque Hittable disposerait d'une (grande) collection de ces autres agents. Une alternative probablement plus judicieuse serait qu'il existe une unique instance de cette collection existant de manière autonome et que les Hittables disposent simplement d'une référence vers cette collection. On pourrait même aller plus loin et attribuer à cette collection le rôle de rechercher (sans répétition) les collisions et de transmettre les messages appropriés aux intervenant impliqués.
+  \item Comment représenter une hitbox? (classe Hitbox envisageable?)
+  \item Lorque le jeu demande au Drawables de se dessiner, il doit probablement leur passer en argument des informations sur la position et la taille de l'écran (centré sur le héros et de dimension fixée?).
+\end{itemize}
+
+
+\begin{tikzpicture}
+  \umlclass[x=5]{Game}{}{+isOver(): bool}
+
+  \umlclass[y=-3,type=interface]{Hittable}{}{\umlvirt{+handleCollisions() : void}\\
+            \umlvirt{+getHitbox() : ?}}
+  \umlclass[y=-3, x=5,type=interface]{Drawable}{}{\umlvirt{+draw(?) : void}}
+  \umlclass[y=-3,x=9,type=interface]{SelfUpdatable}{}{\umlvirt{+update() : void}}
+
+  \umlclass[y=-7, x=9, type=abstract]{Hero}{}{}
+  \umlclass[y=-7,type=abstract]{Block}{}{}
+  \umlclass[y=-7, x=3,type=abstract]{Tile}{}{}
+  \umlclass[y=-7,x=6,type=abstract]{Monster}{}{}
+
+  \umlunicompo[mult2=1..*,pos2=0.6]{Game}{Drawable}
+  \umlunicompo[geometry=-|,mult2=1..*,pos2=1.8]{Game}{SelfUpdatable}
+  \umlunicompo[geometry=-|,mult2=1..*,pos2=1.8]{Game}{Hittable}
+
+  \umlimpl[]{Block}{Hittable}
+  \umlimpl[]{Monster}{Hittable}
+  \umlimpl[]{Tile}{Drawable}
+  \umlimpl[]{Monster}{Drawable}
+  \umlimpl[]{Hero}{Drawable}
+  \umlimpl[]{Hero}{SelfUpdatable}
+  \umlimpl[]{Monster}{SelfUpdatable}
+  \umlimpl[]{Hero}{Hittable}
+
+\end{tikzpicture}
+
+\section{Patterns mis en \oe{}uvre}
+
+La section précédente introduit déjà des patterns qu'il serait peut-être intéressant d'approfondir:
+\begin{itemize}
+  \item La découpe en objets représentables, objets ayant un rôle physique, et objet agissant d'eux même/attendant des inputs du joueur nous incite à essayer de vraiment appliquer le pattern MVC.
+  \item L'idée de créer un objet reprenant la liste des Hittables et s'occupant de checker les collisions et de transmettre les messages appropriés est une application du pattern médiateur.
+  \item Certaines classes ne devraient avoir qu'une seule instance par partie (Héros et collection des Hittables). Le pattern singleton pourrait leur être appliqué pour rendre certains appels statiques.
+\end{itemize}
+
+\end{document}

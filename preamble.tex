@@ -1,0 +1,36 @@
+\usepackage{fixltx2e}
+\usepackage[frenchb]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\usepackage{microtype}
+
+\usepackage[rgb, x11names]{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\usepackage{perpage}
+\MakePerPage{footnote}
+
+\usepackage{listings}
+\lstdefinestyle{Java}{%
+  language=[]Java,
+  basicstyle=\ttfamily\footnotesize,
+  columns=spaceflexible,
+  keywordstyle=\sffamily\footnotesize\color{Blue1},% language keywords
+  keywordstyle=[2]\footnotesize\sffamily\color{RoyalBlue3},% std. library identifiers
+  keywordstyle=[3]\footnotesize\sffamily\color{Purple3},% labels
+  stringstyle=\footnotesize\itshape\color{Coral4},% strings
+  commentstyle=\footnotesize\itshape\color{Green4},% comments
+  identifierstyle=\footnotesize
+}
+\lstset{style=Java, frame=single}
+
+\usepackage{tikz}
+\usepackage{tikz-uml}
+
+\usepackage[colorlinks=true,linktoc=page]{hyperref}
+
+\usepackage[symbol=$^{\blacktriangle}$]{footnotebackref}
