@@ -14,19 +14,104 @@
 \usepackage{perpage}
 \MakePerPage{footnote}
 
+\usepackage{color}
+\definecolor{pblue}{rgb}{0.13,0.13,1}
+\definecolor{pgreen}{rgb}{0,0.5,0}
+\definecolor{pred}{rgb}{0.9,0,0}
+\definecolor{pgrey}{rgb}{0.46,0.45,0.48}
+\definecolor{gray}{gray}{0.5}
+\definecolor{dGray}{gray}{0.35}
+\definecolor{green}{rgb}{0,0.5,0}
+\definecolor{lightgreen}{rgb}{0,0.7,0}
+\definecolor{purple}{rgb}{0.5,0,0.5}
+\definecolor{darkred}{rgb}{0.5,0,0}
+
+\usepackage{setspace}
 \usepackage{listings}
-\lstdefinestyle{Java}{%
-  language=[]Java,
-  basicstyle=\ttfamily\footnotesize,
-  columns=spaceflexible,
-  keywordstyle=\sffamily\footnotesize\color{Blue1},% language keywords
-  keywordstyle=[2]\footnotesize\sffamily\color{RoyalBlue3},% std. library identifiers
-  keywordstyle=[3]\footnotesize\sffamily\color{Purple3},% labels
-  stringstyle=\footnotesize\itshape\color{Coral4},% strings
-  commentstyle=\footnotesize\itshape\color{Green4},% comments
-  identifierstyle=\footnotesize
-}
-\lstset{style=Java, frame=single}
+
+\lstnewenvironment{java}[1][]{
+%This needs xcolor, color, setspace, listings, and the appropriate color definitions (see above)
+\lstset{language=Java,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+otherkeywords={\ },
+  showstringspaces=false,
+alsoletter={1234567890},
+  breakatwhitespace=true,
+  commentstyle=\color{pgreen},
+  keywordstyle=\color{pblue},
+  stringstyle=\color{green},
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{red},
+emph={if,else,else if,for,while,do, System,out,print,println,in,out},
+emphstyle=\color{orange},
+emph={[2]self},
+emphstyle=[2]\color{gray},
+emph={[4]ArithmeticError,AssertionError,char,float,double,AttributeError,BaseException,%
+DeprecationWarning,EOFError,Ellipsis,EnvironmentError,Exception,%
+false,FloatingPointError,FutureWarning,GeneratorExit,IOError,%
+ImportError,ImportWarning,IndentationError,IndexError,KeyError,%
+KeyboardInterrupt,LookupError,MemoryError,NameError,None,%
+NotImplemented,NotImplementedError,OSError,OverflowError,%
+PendingDeprecationWarning,ReferenceError,RuntimeError,RuntimeWarning,%
+StandardError,StopIteration,SyntaxError,SyntaxWarning,SystemError,%
+SystemExit,TabError,true,TypeError,UnboundLocalError,UnicodeDecodeError,%
+UnicodeEncodeError,UnicodeError,UnicodeTranslateError,UnicodeWarning,%
+UserWarning,ValueError,Warning,ZeroDivisionError,abs,all,any,apply,%
+basestring,bool,buffer,callable,chr,classmethod,cmp,coerce,compile,%
+complex,copyright,credits,delattr,dict,dir,divmod,enumerate,eval,%
+execfile,exit,file,filter,float,Float,ArrayList,Arrays,Boolean,Integer,frozenset,getattr,globals,hasattr,%
+hash,help,hex,id,int,intern,isinstance,issubclass,iter,len,%
+Double,String,Scanner,Math,void, double
+license,locals,long,map,object,oct,open,ord,pow,property,%
+quit,reduce,reload,repr,reversed,round,set,setattr,%
+slice,sorted,staticmethod,str,sum,super,tuple,type,unichr,unicode,%
+vars,xrange,zip},
+emphstyle=[4]\color{blue},
+upquote=true,
+commentstyle=\color{dGray}\rmfamily\em,
+literate={>>>}{\textbf{\textcolor{darkred}{>{>}>}}}3
+         {...}{{\textcolor{gray}{...}}}3
+         {à}{{\`a}}1
+         {À}{{\`A}}1
+         {â}{{\^a}}1
+         {Â}{{\^A}}1
+         {ä}{{\"a}}1
+         {Ä}{{\"A}}1
+         {ç}{{\c c}}1
+         {Ç}{{\c C}}1
+         {é}{{\'e}}1
+         {É}{{\'E}}1
+         {è}{{\`e}}1
+         {È}{{\`E}}1
+         {ê}{{\^e}}1
+         {Ê}{{\^E}}1
+         {ë}{{\"e}}1
+         {Ë}{{\"E}}1
+         {î}{{\^i}}1
+         {Î}{{\^I}}1
+         {ï}{{\"i}}1
+         {Ï}{{\"I}}1
+         {ô}{{\^o}}1
+         {Ô}{{\^O}}1
+         {ö}{{\"o}}1
+         {Ö}{{\"O}}1
+         {ù}{{\`u}}1
+         {Ù}{{\`U}}1
+         {û}{{\^u}}1
+         {Û}{{\^U}}1
+         {ü}{{\"u}}1
+         {Ü}{{\"U}}1
+         {ÿ}{{\"y}}1
+         {Ÿ}{{\"Y}}1
+         {œ}{{\oe}}1
+         {Œ}{{\OE}}1
+         {æ}{{\ae}}1
+         {Æ}{{\AE}}1,
+xleftmargin=4mm,
+frame=leftline,
+}}{}
 
 \usepackage{tikz}
 \usepackage{tikz-uml}

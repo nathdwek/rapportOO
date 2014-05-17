@@ -2,7 +2,7 @@
 
 \input{preamble.tex}
 
-\title{Rapport 4 avril - projet orienté objet}
+\title{Rapport - projet orienté objet}
 \author{Jun Nuo Chi, Nathan Dwek, Thomas Vandamme}
 
 \begin{document}
@@ -28,7 +28,11 @@ Nous allons essayer de programmer un jeu de type run \& jump basé sur l'univers
 
 De plus, nous allons essayer de mettre en place un système de sauvegarde de partie, ce qui implique que le jeu doit comporter un menu avant le démarrage même d'une partie, ainsi qu'un menu accessible pendant la partie. Cet aspect doit encore être précisé.
 
-\section{Découpe objet}
+\section{Structure et implémentation du programme}
+
+Au niveau le plus élevé, le programme est structuré autour du pattern Modèle-Vue-Contrôleur avec modèle passif. Ce dernier s'occupe uniquement de la représentation et du traitement des informations (bien évidemment à travers une hiérarchie objet). Ces informations sont présentées à l'utilisateur par la vue qui se charge elle-même de questionner à intervalle régulier le modèle sur l'état du système. Le contrôleur reçoit les inputs de l'utilisateur et envoie les messages adéquats au modèle. Il émet aussi les ticks d'horloge, contrôle l'exécution ou non de la boucle principale du jeu proprement dit et peu diffuser certains messages d'importance globale.
+
+\subsection{Organisation du modèle}
 
 Les fonctionnalités principales à implémenter font logiquement apparaître trois interfaces qui regroupent des fonctions essentielles remplies par des groupes d'objets.
 \begin{itemize}
