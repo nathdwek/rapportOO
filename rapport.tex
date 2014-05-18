@@ -16,17 +16,18 @@ Jun Nuo \textsc{Chi} - Nathan \textsc{Dwek} - Thomas \textsc{Vandamme}
 
 \section{Sujet choisi et fonctionnalités}
 
-Nous allons essayer de programmer un jeu de type run \& jump basé sur l'univers de Sonic. Les fonctionnalités essentielles sont à implémenter sont donc:
+Nous avons essayer de programmer un jeu de type run \& jump basé sur l'univers de Sonic. Les principales fonctionnalités que nous avons reussis à implémenter dans notre jeu sont:
 \begin{itemize}
 
-\item Moteur physique et hitbox <<précises>>.
-\item Héros unique capable au moins de marcher, sauter et courir, avec la course demandant une physique et un aspect assez particulier. Des bonus affectant les capacités et l'aspect du héros sont envisageables.
-\item Parmi les autres éléments dynamiques: au moins monstres et bonus.
+\item Moteur physique et hitbox de formes simples entourant les personnages et objets de façon plus ou moins <<précise>.
+\item Héros unique capable de marcher, de courir, de sauter, de récuperer des pièces mais également de se mettre en boule permettant ainsi de changer ses capacités : vitesse maximale accrue et invincibilité face aux monstres. 
+\item Deux types de monstres se déplaçant de façon autonome et interragisant avec les blocs. 
 \item Une interface graphique capable de suivre le héros dans sa progression dans le niveau.
+\item Une interface graphique avec lequel l'utilisateur peut interragir : bouton pour mettre en pause, redémarrer le niveau, revenir au menu ou encore choisir le terrain de jeu voulu(niveau).
 
 \end{itemize}
 
-De plus, nous allons essayer de mettre en place un système de sauvegarde de partie, ce qui implique que le jeu doit comporter un menu avant le démarrage même d'une partie, ainsi qu'un menu accessible pendant la partie. Cet aspect doit encore être précisé.
+Le choix du niveau se fait au menu de démarrage, le programme permet de choisir un terrain écrit en XML, celui-ci est retranscrit en language java par le programme. La création d'un  niveau est ainsi considérablement facilitée, puisqu'il n'est plus nécessaire d'instancier un par un les monstres et autres objets intervenant dans le jeu.
 
 \section{Structure et implémentation du programme}
 
