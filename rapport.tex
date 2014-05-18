@@ -24,7 +24,7 @@ Nous avons programmé un jeu de type run \& jump basé sur l'univers de Sonic. L
 \item Architecture des niveaux: blocs de taille totalement arbitraire et possibilités de pentes.
 \item Un modèle physique d'obstacle (fixe) et un modèle physique de monstre (dynamique). Plusieurs aspects facilement possibles grâce au pattern décorateur.
 \item Une interface graphique capable de suivre le héros dans sa progression dans le niveau. Le scrolling est satisfaisant et rend compte de la vitesse et des accélérations du héros.
-\item Ecran d'accueil et menus disponibles en jeu. Actions possibles: pause/continuer, restart, retour à l'écran d'accueil, choix du niveau (voir point suivant).
+\item Ecran d'accueil et menus disponibles en jeu. Actions possibles: pause-depause, restart, retour à l'écran d'accueil, choix du niveau (voir point suivant).
 \item Niveaux décrits en XML: lisibilité, facilité d'édition, format standardisé.
 
 \end{itemize}
@@ -80,6 +80,11 @@ Les objets dynamiques disposent de la méthode {\tt selfUpdate} qui est appelée
 
 Pour ce qui est du <<moteur physique>> du jeu, les classes abstraites et interfaces essentielles ont été décrites. Toutes les autres classes implémentent une ou plusieurs de ces superclasses pour définir leur comportement. L'organisation de ces sous-classes ne dépend plus maintenant de la manière dont le modèle est implémenté mais de la manière dont l'univers du jeu s'organise lui-même.
 Voici le diagramme de classe final du modèle:
+\makebox[1.1\textwidth][c]{%
+\includegraphics[width=1.1\textwidth]{classes.eps}%
+}
+
+
 
 
 

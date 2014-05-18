@@ -5,5 +5,5 @@
 *.out
 *.backup
 *.synctex.gz
-
+*converted-to.pdf
 .directory
