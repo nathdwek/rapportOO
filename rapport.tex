@@ -84,22 +84,46 @@ Voici le diagramme de classe final du modèle:
 \includegraphics[width=1.1\textwidth]{classes.eps}%
 }
 
-
-
-
-
-
-
-
-
-
-
-
 \subsubsection{Diagramme de séquence du modèle}
 
 \subsection{Implémentation de la vue}
 
+A chaque tick d'horloge, la vue doit présenter à nouveau à l'utilisateur tous les objets devant être représentés à l'écran. Ces objet dépendent bien sûr du modèle, et comme dit dans l'introduction, la vue questionne donc celui-ci à intervalles réguliers. Cependant, nous avons préféré éviter que la vue demande directement à des objets du modèle de se représenter eux-même car ceci nuirait à l'indépendance des divers composants du jeu. Nous avons donc utilisé le pattern décorateur/pont pour garder une approche MVC rigoureuse: les objets représentables du modèle implémente l'interface {\tt HasSprite} qui garantit simplement qu'ils sont capable de pointer vers un objet de la vue capable des les représenter adéquatement. Cet objet implémente l'interface {\tt Drawable} et peut donc être appelé par la vue.
+
+Ceci comporte aussi l'avantage habituel du pattern décorateur qu'il est possible de très facilement changer le sprite d'un objet, ce qui signifie que nous pouvons créer des objets ayant le même comportement physique côté modèle, mais des représentations différentes, et ce sans créer de nombreuses sous-classes superflues. Ceci a été fait pour créer deux monstres au comportement similaire, mais d'aspect différent.
+
+\begin{java}
+public class PlayPanel{
+  ...
+  public void paint(Graphics g){
+    ...
+    for (HasSprite hS : paintables){
+      hS.getSprite().draw(g, this, left,top, windowWidth, windowHeight);
+    }
+  }
+  ...
+}
+\end{java}
+
+\begin{tikzpicture}
+\umlclass[x=0]{PlayPanel}{paintables : List<HasSprite>}{paint(...): void}
+\umlinterface[x=7]{HasSprite}{}{+getSprite() : Drawable\\+setSprite(Drawable sprite):void}
+\umluniassoc{PlayPanel}{HasSprite}
+
+\umlabstract[x=1,y=-4]{Unit}{-sprite: Drawable}{}
+\umlabstract[x=5, y=-4]{Block}{-sprite: Drawable}{}
+\umlabstract[x=9,y=-4]{Coin}{-sprite: Drawable}{}
+
+\umlimpl[]{Unit}{HasSprite}
+\umlimpl[]{Block}{HasSprite}
+\umlimpl[]{Coin}{HasSprite}
+\end{tikzpicture}
+\vspace{1em}
+
+
 \subsection{Contrôle du Héros}
+
+
 
 \section{Détails intéressants (?)}
 
