@@ -16,18 +16,17 @@ Jun Nuo \textsc{Chi} - Nathan \textsc{Dwek} - Thomas \textsc{Vandamme}
 
 \section{Sujet choisi et fonctionnalités}
 
-Nous avons essayer de programmer un jeu de type run \& jump basé sur l'univers de Sonic. Les principales fonctionnalités que nous avons reussis à implémenter dans notre jeu sont:
+Nous avons programmé un jeu de type run \& jump basé sur l'univers de Sonic. Les principales fonctionnalités que nous avons implémentées sont:
 \begin{itemize}
 
-\item Moteur physique et hitbox de formes simples entourant les personnages et objets de façon plus ou moins <<précise>.
-\item Héros unique capable de marcher, de courir, de sauter, de récuperer des pièces mais également de se mettre en boule permettant ainsi de changer ses capacités : vitesse maximale accrue et invincibilité face aux monstres. 
-\item Deux types de monstres se déplaçant de façon autonome et interragisant avec les blocs. 
-\item Une interface graphique capable de suivre le héros dans sa progression dans le niveau.
-\item Une interface graphique avec lequel l'utilisateur peut interragir : bouton pour mettre en pause, redémarrer le niveau, revenir au menu ou encore choisir le terrain de jeu voulu(niveau).
+\item Moteur physique et hitbox <<précises>>. Jeu réactif, accélérations et gravité réalistes.
+\item Héros unique capable de marcher, courir, sauter, de récupérer des pièces et surtout de se mettre en boule permettant ainsi de changer ses capacités : vitesse maximale accrue et invincibilité face aux monstres.
+\item Un modèle physique d'obstacle (fixe) et un modèle physique de monstre (dynamique). Plusieurs aspects facilement possibles grâce au pattern décorateur.
+\item Une interface graphique capable de suivre le héros dans sa progression dans le niveau. Le scrolling est satisfaisant et rend compte de la vitesse et des accélérations du héros.
+\item Ecran d'accueil et interface graphique disponible en jeu. Actions possibles: pause/continuer, restart, retour à l'écran d'accueil, choix du niveau (voir point suivant).
+\item Niveaux décrits en XML: lisibilité, facilité d'édition.
 
 \end{itemize}
-
-Le choix du niveau se fait au menu de démarrage, le programme permet de choisir un terrain écrit en XML, celui-ci est retranscrit en language java par le programme. La création d'un  niveau est ainsi considérablement facilitée, puisqu'il n'est plus nécessaire d'instancier un par un les monstres et autres objets intervenant dans le jeu.
 
 \section{Structure et implémentation du programme}
 
