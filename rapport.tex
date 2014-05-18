@@ -31,81 +31,71 @@ Le choix du niveau se fait au menu de démarrage, le programme permet de choisir
 
 \section{Structure et implémentation du programme}
 
-Au niveau le plus élevé, le programme est structuré autour du pattern Modèle-Vue-Contrôleur avec modèle passif. Ce dernier s'occupe uniquement de la représentation et du traitement des informations (bien évidemment à travers une hiérarchie objet). Ces informations sont présentées à l'utilisateur par la vue qui se charge elle-même de questionner à intervalle régulier le modèle sur l'état du système. Le contrôleur reçoit les inputs de l'utilisateur et envoie les messages adéquats au modèle. Il émet aussi les ticks d'horloge, contrôle l'exécution ou non de la boucle principale du jeu proprement dit et peu diffuser certains messages d'importance globale.
+Au niveau le plus élevé, le programme est structuré autour du pattern Modèle-Vue-Contrôleur avec modèle passif. Ce dernier s'occupe uniquement de la représentation et du traitement des informations (bien évidemment à travers une hiérarchie objet). Ces informations sont présentées à l'utilisateur par la vue qui se charge elle-même de questionner à intervalle régulier le modèle sur l'état du système. Le contrôleur reçoit les inputs de l'utilisateur et envoie les messages adéquats au modèle. Il contrôle aussi l'exécution ou non de la boucle principale du jeu proprement dit et émet donc les ticks d'horloge.
+
+\begin{minipage}[l]{0.6 \textwidth}
+\begin{java}
+public class Main {
+  public static void main(String[] args){
+    Model m = new Model();
+    View v = new View(m);
+    Controller c = new Controller(m,v);
+
+    c.runSonic();
+  }
+}
+\end{java}
+\end{minipage}\begin{minipage}[r]{0.35 \textwidth}
+\begin{tikzpicture}
+\umlclass[x=5]{Controller}{-model : Model\\-view : View\\-mainLoop : Timer}{+runSonic() : void\\+startGame() : void\\+stopGame() : void}
+\end{tikzpicture}
+\vspace{1em}
+\end{minipage}
+
+A chaque tick, deux actions ont lieu: le modèle est <<intégré>> d'un pas de temps et la vue est rafraîchie. Nous allons maintenant voir comment a lieu l'intégration du modèle, ce qui va directement mener à son diagramme de classe.
 
 \subsection{Organisation du modèle}
 
-Les fonctionnalités principales à implémenter font logiquement apparaître trois interfaces qui regroupent des fonctions essentielles remplies par des groupes d'objets.
+Pour avancer d'un pas de temps, le modèle effectue deux opérations: il gère les collisions entre les objets et demande aux objets dynamiques d'avancer à leur tour d'un pas de temps. A cet effet nous avons créé une classe abstraite {\tt Hittable} permettant au modèle de dialoguer avec tous les objets quels qu'ils soient pouvant être impliqués dans une collision, ainsi qu'une interface {\tt SelfUpdatable} permettant au modèle de demander à tous les objets dynamiques de s'updater. Il est à noter que pour éviter de vérifier des collisions qui ne peuvent normalement avoir lieu, ou qui n'auront jamais de conséquences (collision bloc-bloc par exemple) les objet {\tt Hittable} sont répartis en deux listes afin d'effectuer à chaque pas uniquement:
 \begin{itemize}
-  \item Les objets Drawables: qui peuvent se représenter à l'écran.
-  \item Les objets Hittables: qui jouent un rôle physique et possèdent donc une hitbox et sont capables de gérer leurs collisions.
-  \item Les objets SelfUpdatables: qui sont dynamiques et agissent d'eux-même, sans intervention extérieure (contrairement à un bloc bonus par exemple, qui est aussi dynamique, mais qui ne peut pas décider de lui-même de s'animer)(Toute séquence est donc originellement initiée par un SelfUpdatable).
+  \item une seule vérification par paire d'objets a priori mobiles
+  \item une vérification par paire objet a priori mobile - objet statique
 \end{itemize}
 
-Ceci permettrait de réduire le modèle du jeu à quelque chose comme:
+\subsubsection{Gestion des collisions}
 
-\begin{lstlisting}
-while (not game.isOver()){
-  for (Hittable h : hittables){
-    h.handleCollisions()
-  }
-  for (SelfUpdatable s : selfUpdatables){
-    s.update()
-  }
-  for (Drawable d : drawables){
-    d.draw(?)
-  }
-  wait(?)
-}
-\end{lstlisting}
+Nous approximons toutes les hitbox par des rectangles de taille entièrement libre. Pour permettre certaines collisions plus complexes, les hitbox sont aussi définies par les normales à leurs quatre côtés (pas forcément celles d'un rectangle même si la hitbox en est un). Un objet {\tt Hittable} dispose donc d'une position et peut fournir sa taille et sa normale dans une des quatre directions. Il est capable de gérer une collision avec un autre objet {\tt Hittable}, en utilisant la normale à la face touchée.
 
-Avec le méthode update de Hero étant certainement un peu particulière puisque contrairement à celle Monster, elle ne se limite pas à de la logique mais attend aussi des inputs du joueur.
+Lorsque le modèle détecte une collision entre deux {\tt Hittable}, il appelle la méthode {\tt handleCollision} sur chacun des deux objets en leur passant l'autre objet et la normale correspondante. Cependant, les objets passés en arguments sont toujours seulement des {\tt Hittable} puisque c'est sous cette forme que le modèle interagit avec eux. Pour permettre aux objets de gérer de manière différenciée les collisions selon le type d'objet touché, nous utilisons le pattern visiteur.
 
-Un niveau plus bas, différentes classes abstraites, plus <<parlantes>> implémentent une ou plusieurs interfaces. Plusieurs problématiques restent encore ouvertes
-\begin{itemize}
-  \item Les Blocks ne sont pas forcément Drawables car les blocs invisibles sont monnaie courante (pour détecter la mort par chute par exemple). Dès lors, on peut créer des blocs visibles soit en implémentant Drawable par certaines des sous-classes concrètes de Block, soit en créant des objets composites composés d'un Block et d'une Tile.
-  \item La gestion des collisions est encore sujette à débat. En effet, si l'on ne veut pas doubler le nombre d'opérations nécessaires, il faut a priori introduire une asymétrie dans les objets Hittables (Pour éviter que monstre1 vérifie s'il entre en collision avec bloc2 en même temps que bloc2 vérifie s'il entre en collision avec monstre1). Si l'on y fait pas attention monstre1 pourrait même essayer de gérer deux fois une seule et même collision.
-  \item De plus pour que les Hittables puissent détecter les collisions, il faudrait à priori qu'ils disposent de références vers les autres Hittables (ou probablement uniquement les Hittables SelfUpdatables). Dès lors, chaque Hittable disposerait d'une (grande) collection de ces autres agents. Une alternative probablement plus judicieuse serait qu'il existe une unique instance de cette collection existant de manière autonome et que les Hittables disposent simplement d'une référence vers cette collection. On pourrait même aller plus loin et attribuer à cette collection le rôle de rechercher (sans répétition) les collisions et de transmettre les messages appropriés aux intervenant impliqués.
-  \item Comment représenter une hitbox? (classe Hitbox envisageable?)
-  \item Lorque le jeu demande au Drawables de se dessiner, il doit probablement leur passer en argument des informations sur la position et la taille de l'écran (centré sur le héros et de dimension fixée?).
-\end{itemize}
+La méthode {\tt handleCollision} d'une classe {\tt A} demande simplement à l'autre objet (toujours vu comme un {\tt Hittable}) de gérer une collision avec un objet {\tt A} en passant toujours la normale adéquate en argument. Ceci permet en utilisant le polymorphisme de différencier les collisions tout en restant parfaitement orienté objet.
+
+Il est à noter que la méthode {\tt handleCollision} renvoie une valeur booléenne selon que l'autre objet doit être détruit lors de la collision ou non. Si c'est le cas, cet objet est ajouté a une liste temporaire d'objet a détruire et ne sera détruit qu'à la toute fin du pas de temps courant.
+
+\subsubsection{Objets Dynamiques}
+
+Les objets dynamiques disposent de la méthode {\tt selfUpdate} qui est appelée par le modèle après la gestion des collisions et qui s'exécutent différemment selon la classe et l'état de l'objet.
+
+\subsubsection{Diagramme de classe du modèle}
+
+Pour ce qui est du <<moteur physique>> du jeu, les classes abstraites et interfaces essentielles ont été décrites. Toutes les autres classes implémentent une ou plusieurs de ces superclasses pour définir leur comportement. L'organisation de ces sous-classes ne dépend plus maintenant de la manière dont le modèle est implémenté mais de la manière dont l'univers du jeu s'organise lui-même.
+Voici le diagramme de classe final du modèle:
 
 
-\begin{tikzpicture}
-  \umlclass[x=5]{Game}{}{+isOver(): bool}
 
-  \umlclass[y=-3,type=interface]{Hittable}{}{\umlvirt{+handleCollisions() : void}\\
-            \umlvirt{+getHitbox() : ?}}
-  \umlclass[y=-3, x=5,type=interface]{Drawable}{}{\umlvirt{+draw(?) : void}}
-  \umlclass[y=-3,x=9,type=interface]{SelfUpdatable}{}{\umlvirt{+update() : void}}
 
-  \umlclass[y=-7, x=9, type=abstract]{Hero}{}{}
-  \umlclass[y=-7,type=abstract]{Block}{}{}
-  \umlclass[y=-7, x=3,type=abstract]{Tile}{}{}
-  \umlclass[y=-7,x=6,type=abstract]{Monster}{}{}
 
-  \umlunicompo[mult2=1..*,pos2=0.6]{Game}{Drawable}
-  \umlunicompo[geometry=-|,mult2=1..*,pos2=1.8]{Game}{SelfUpdatable}
-  \umlunicompo[geometry=-|,mult2=1..*,pos2=1.8]{Game}{Hittable}
 
-  \umlimpl[]{Block}{Hittable}
-  \umlimpl[]{Monster}{Hittable}
-  \umlimpl[]{Tile}{Drawable}
-  \umlimpl[]{Monster}{Drawable}
-  \umlimpl[]{Hero}{Drawable}
-  \umlimpl[]{Hero}{SelfUpdatable}
-  \umlimpl[]{Monster}{SelfUpdatable}
-  \umlimpl[]{Hero}{Hittable}
 
-\end{tikzpicture}
 
-\section{Patterns mis en \oe{}uvre}
 
-La section précédente introduit déjà des patterns qu'il serait peut-être intéressant d'approfondir:
-\begin{itemize}
-  \item La découpe en objets représentables, objets ayant un rôle physique, et objet agissant d'eux même/attendant des inputs du joueur nous incite à essayer de vraiment appliquer le pattern MVC.
-  \item L'idée de créer un objet reprenant la liste des Hittables et s'occupant de checker les collisions et de transmettre les messages appropriés est une application du pattern médiateur.
-  \item Certaines classes ne devraient avoir qu'une seule instance par partie (Héros et collection des Hittables). Le pattern singleton pourrait leur être appliqué pour rendre certains appels statiques.
-\end{itemize}
+
+\subsubsection{Diagramme de séquence du modèle}
+
+\subsection{Implémentation de la vue}
+
+\subsection{Contrôle du Héros}
+
+\section{Détails intéressants (?)}
 
 \end{document}
