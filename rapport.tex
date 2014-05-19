@@ -106,22 +106,48 @@ public class PlayPanel{
 \end{java}
 
 \begin{tikzpicture}
-\umlclass[x=0]{PlayPanel}{paintables : List<HasSprite>}{paint(...): void}
+\umlclass[x=0]{PlayPanel}{-paintables : List<HasSprite>}{+paint(...) : void}
 \umlinterface[x=7]{HasSprite}{}{+getSprite() : Drawable\\+setSprite(Drawable sprite):void}
 \umluniassoc{PlayPanel}{HasSprite}
 
-\umlabstract[x=1,y=-4]{Unit}{-sprite: Drawable}{}
-\umlabstract[x=5, y=-4]{Block}{-sprite: Drawable}{}
-\umlclass[x=9,y=-4]{Coin}{-sprite: Drawable}{}
+\umlabstract[x=1,y=-3.75]{Unit}{-sprite: Drawable}{}
+\umlabstract[x=5, y=-3.75]{Block}{-sprite: Drawable}{}
+\umlclass[x=9,y=-3.75]{Coin}{-sprite: Drawable}{}
 
 \umlimpl[]{Unit}{HasSprite}
 \umlimpl[]{Block}{HasSprite}
 \umlimpl[]{Coin}{HasSprite}
+
+\umlinterface[x=5, y=-7.5]{Drawable}{}{+draw(...) : void}
+
+\umluniassoc{Unit}{Drawable}
+\umluniassoc{Block}{Drawable}
+\umluniassoc{Coin}{Drawable}
+
+
 \end{tikzpicture}
 \vspace{1em}
 
 
 \subsection{Contrôle du Héros}
+
+\begin{tikzpicture}
+\umlclass[x=0]{SonicListener}{-hero : Controllable}{}
+\umlinterface[x=5]{Controllable}{}{+goRight() : void\\%
++goLeft() : void\\%
++jump() : void\\%
++stopX() : void\\%
++stopJump() : void\\%
++beBall() : void\\%
++beNormal() : void
+}
+\umluniassoc{SonicListener}{Controllable}
+
+\umlclass[x=10]{Sonic}{acceleratingX : Integer\\acceleratingY : Integer \\falling : Boolean\\isBall : Boolean}{}
+
+\umlimpl[]{Sonic}{Controllable}
+\end{tikzpicture}
+\vspace{1em}
 
 
 
