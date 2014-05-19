@@ -131,6 +131,25 @@ public class PlayPanel{
 
 \subsection{Contrôle du Héros}
 
+Les inputs claviers sont gérés par la classe {\tt SonicListener} qui les transmet au héros par l'intermédiaire de son interface {\tt Controllable}. Chaque input ne déclenche pas immédiatement un changement d'accélération ou de vitesse car le comportement physique du héros serait alors dépendant de la vitesse de répétition des événements {\tt keyPressed} et {\tt keyReleased}. Afin d'éviter cela, les méthodes de {\tt Controllable} implémentées par {\tt Sonic} se contentent de modifier des variables booléennes ou entière simples qui définissent l'état du héros et les commandes de l'utilisateur et qui sont ensuite consultées à chaque pas par {\tt selfUpdate()} pour faire agir le héros.
+
+\clearpage
+
+\begin{java}
+public class View{
+  ...
+    public void startGame(Controller c){
+    ...
+    playPanel = new PlayPanel(model);
+    playPanel.setFocusable(true);
+    playPanel.addKeyListener(new SonicListener(model.getControlledHero()));
+    ...
+  }
+  ...
+}
+\end{java}
+
+\vspace{1em}
 \begin{tikzpicture}
 \umlclass[x=0]{SonicListener}{-hero : Controllable}{}
 \umlinterface[x=5]{Controllable}{}{+goRight() : void\\%
@@ -149,8 +168,7 @@ public class PlayPanel{
 \end{tikzpicture}
 \vspace{1em}
 
+Les interfaces {\tt HasSprite} et {\tt Controllable} sont donc les deux points d'ancrage principaux pour la vue et le contrôleur en vue de rendre le modèle le plus indépendant possible de ceux-ci.
 
-
-\section{Détails intéressants (?)}
 
 \end{document}
