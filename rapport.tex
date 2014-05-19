@@ -66,7 +66,7 @@ Pour avancer d'un pas de temps, le modèle effectue deux opérations: il gère l
 
 Nous approximons toutes les hitbox par des rectangles de taille entièrement libre. Pour permettre certaines collisions plus complexes, les hitbox sont aussi définies par les normales à leurs quatre côtés (pas forcément celles d'un rectangle même si la hitbox en est un). Un objet {\tt Hittable} dispose donc d'une position et peut fournir sa taille et sa normale dans une des quatre directions. Il est capable de gérer une collision avec un autre objet {\tt Hittable}, en utilisant la normale à la face touchée.
 
-Lorsque le modèle détecte une collision entre deux {\tt Hittable}, il appelle la méthode {\tt handleCollision} sur chacun des deux objets en leur passant l'autre objet et la normale correspondante. Cependant, les objets passés en arguments sont toujours seulement des {\tt Hittable} puisque c'est sous cette forme que le modèle interagit avec eux. Pour permettre aux objets de gérer de manière différenciée les collisions selon le type d'objet touché, nous utilisons le pattern visiteur.
+Lorsque le modèle détecte une collision entre deux {\tt Hittable}, il appelle la méthode {\tt handleCollision} sur chacun des deux objets en leur passant l'autre objet et la normale correspondante en argument. Cependant, les objets passés en arguments sont toujours seulement des {\tt Hittable} puisque c'est sous cette forme que le modèle interagit avec eux. Pour permettre aux objets de gérer de manière différenciée les collisions selon le type d'objet touché, nous utilisons le pattern visiteur.
 
 La méthode {\tt handleCollision} d'une classe {\tt A} demande simplement à l'autre objet (toujours vu comme un {\tt Hittable}) de gérer une collision avec un objet {\tt A} en passant toujours la normale adéquate en argument. Ceci permet en utilisant le polymorphisme de différencier les collisions tout en restant parfaitement orienté objet.
 
@@ -81,7 +81,7 @@ Les objets dynamiques disposent de la méthode {\tt selfUpdate} qui est appelée
 Pour ce qui est du <<moteur physique>> du jeu, les classes abstraites et interfaces essentielles ont été décrites. Toutes les autres classes implémentent une ou plusieurs de ces superclasses pour définir leur comportement. L'organisation de ces sous-classes ne dépend plus maintenant de la manière dont le modèle est implémenté mais de la manière dont l'univers du jeu s'organise lui-même.
 Voici le diagramme de classe final du modèle:
 \makebox[1.1\textwidth][c]{%
-\includegraphics[width=1.1\textwidth]{classes.eps}%
+\includegraphics[width=1.1\textwidth]{classes-eps-converted-to.pdf}%
 }
 
 \subsubsection{Diagramme de séquence du modèle}
