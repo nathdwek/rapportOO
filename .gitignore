@@ -4,5 +4,8 @@
 *.snm
 *.out
 *.backup
+*.blg
+*.bbl
+Thumbs.db
 *.synctex.gz
 .directory

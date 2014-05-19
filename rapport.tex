@@ -81,13 +81,13 @@ Les objets dynamiques disposent de la méthode {\tt selfUpdate} qui est appelée
 Pour ce qui est du <<moteur physique>> du jeu, les classes abstraites et interfaces essentielles ont été décrites. Toutes les autres classes implémentent une ou plusieurs de ces superclasses pour définir leur comportement. L'organisation de ces sous-classes ne dépend plus maintenant de la manière dont le modèle est implémenté mais de la manière dont l'univers du jeu s'organise lui-même.
 Voici le diagramme de classe final du modèle:
 \makebox[1.1\textwidth][c]{%
-\includegraphics[width=1.1\textwidth]{classes-eps-converted-to.pdf}%
+\includegraphics[width=1.1\textwidth]{classes.eps}%
 }
 
 \subsubsection{Diagramme de séquence du modèle}
 
-\includegraphics[width=1.1\textwidth]{diagrammeModel.png}
-\includegraphics[width=1.1\textwidth]{diagrammeView.png}
+\includegraphics[width=\textwidth]{diagrammeModel.png}
+\includegraphics[width=\textwidth]{diagrammeView.png}
 
 
 \subsection{Implémentation de la vue}
@@ -136,8 +136,6 @@ public class PlayPanel{
 \subsection{Contrôle du Héros}
 
 Les inputs claviers sont gérés par la classe {\tt SonicListener} qui les transmet au héros par l'intermédiaire de son interface {\tt Controllable}. Chaque input ne déclenche pas immédiatement un changement d'accélération ou de vitesse car le comportement physique du héros serait alors dépendant de la vitesse de répétition des événements {\tt keyPressed} et {\tt keyReleased}. Afin d'éviter cela, les méthodes de {\tt Controllable} implémentées par {\tt Sonic} se contentent de modifier des variables booléennes ou entière simples qui définissent l'état du héros et les commandes de l'utilisateur et qui sont ensuite consultées à chaque pas par {\tt selfUpdate()} pour faire agir le héros.
-
-\clearpage
 
 \begin{java}
 public class View{
